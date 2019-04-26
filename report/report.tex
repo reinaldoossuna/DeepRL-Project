@@ -1,0 +1,128 @@
+\documentclass[12pt]{extarticle}
+
+%Some packages I commonly use.
+\usepackage[english]{babel}
+\usepackage[pdftex]{graphicx}
+\usepackage{cite}
+\usepackage[top=1 in,bottom=1in, left=1 in, right=1 in]{geometry}
+
+\title{DeepRL Project}
+\author{Reinaldo Ossuna}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+The goal of this project is to create a DQN agent and define a reward functions to teach a robot arm to carry out two
+primary objectives:
+
+* Have any part of the robot arm touch the object of interest, with at least a 90\% accuracy.
+
+* Have only the gripper base of the robot arm touch the object of interest, with at least a 80\% accuracy.
+
+
+\section{Reward Functions}
+
+The arm joints were updated using the position control, since this resulted a better result in the simulation.
+
+A positive reward was set for any any collision between the arm and the tube (in the second task only give the reward
+for collision between the gripper and the tube). And penalities for collision with the ground.
+
+A interim reward function was added based on the distance from the gripper and the tube.
+
+\subsection{1. Objective}
+
+
+\begin{itemize}
+  \item REWARD\_WIN +20
+    
+    * Collision between the arm and the tube
+  \item REWARD\_LOSS -20
+
+    * Collision between the arm and the ground
+   \item REWARD\_INTERIM 2 \\ ALPHA = 0.1
+
+
+
+				avgGoalDelta  = (avgGoalDelta * ALPHA) + (distDelta * (1.0f - ALPHA)) ;
+
+				   rewardHistory = avgGoalDelta * REWARD\_INTERIM ;
+
+\end{itemize}
+
+
+\subsection{2. Objective}
+
+
+\begin{itemize}
+  \item REWARD\_WIN +500
+    
+    * Collision between the arm and the tube
+  \item REWARD\_LOSS -500
+
+    * Collision between the arm and the ground
+   \item REWARD\_INTERIM 10 \\ ALPHA = 0.1
+
+\end{itemize}
+
+
+\section{Hyperparameters}
+
+
+\begin{itemize}
+  \item Input\_Width x Input\_Height
+
+    Keeping the size of each image small helped in training. bigger images implies in more parameters to be trained.
+      
+    #define INPUT\_WIDTH 64
+    #define INPUT\_HEIGHT 64
+  \item Batch size
+
+    For the batch size 32 as a good number, a large number of bath require more memory.
+
+  \item Optimizer
+
+    In this project Adam and RMSprp were tested and RMSprop showed be a better option.
+  \item Learning\_rate
+
+    The learning rate is a key parameters, a large value can result in the model to not converge. 
+    To the first task the 0.1 value was a good value, but in the second task the value 0.01 was required to complete the
+    task.
+
+  \item LSTM
+    
+    We used the LSTM architeture to allow the network to use past frames in consideration instead of the only actual
+    frame.
+    A large number can cause memory problems, 256 was chosed.
+
+
+\end{itemize}
+
+\section{Results}
+The first task the network was able to achive realy quick with a small affort. The second task the performance is not
+stable and sometimes the arm will not performace the task.
+
+\begin{figure}[thpb]
+      \centering
+      \includegraphics[width=\linewidth]{2019-03-24-172836_1920x1080_scrot.png}
+      \caption{objective1}
+\end{figure}
+
+\begin{figure}[thpb]
+      \centering
+      \includegraphics[width=\linewidth]{2019-04-14-104706_1912x1015_scrot.png}
+      \caption{objective2}
+\end{figure}
+
+
+
+\section{Future Work}
+
+The use of the Gazebo environment allow we to use a large amount of robots in differents task. I want to tray to
+recreate some previous projects using DQN.
+
+\end{document}
+
+
